@@ -13,7 +13,10 @@ public class Product {
     private Long id;
 
     @Column
-    private String name;
+    private String productName;
+
+    @Column
+    private Double price;
 
     @ManyToMany
     @JoinTable(
@@ -23,6 +26,12 @@ public class Product {
     )
     @JsonBackReference("customerPackages-products")
     private Set<CustomerPackage> customerPackages;
+
+    public Product(String productName, Double price) {
+        this.productName = productName;
+        this.price = price;
+
+    }
 
     public Product() {
     }
@@ -35,12 +44,12 @@ public class Product {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setProductName(String name) {
+        this.productName = name;
     }
 
     public Set<CustomerPackage> getCustomerPackages() {
@@ -49,5 +58,13 @@ public class Product {
 
     public void setCustomerPackages(Set<CustomerPackage> customerPackages) {
         this.customerPackages = customerPackages;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

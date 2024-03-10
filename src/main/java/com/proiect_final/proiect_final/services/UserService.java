@@ -1,7 +1,9 @@
 package com.proiect_final.proiect_final.services;
 
 import com.proiect_final.proiect_final.dtos.AuthRequestDTO;
+import com.proiect_final.proiect_final.dtos.EventRequestDTO;
 import com.proiect_final.proiect_final.dtos.UserRequestDTO;
+import com.proiect_final.proiect_final.entities.Event;
 import com.proiect_final.proiect_final.entities.Role;
 import com.proiect_final.proiect_final.entities.RoleType;
 import com.proiect_final.proiect_final.entities.User;
@@ -16,12 +18,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class UserService {
 
     UserRepository userRepository;
     EventRepository eventRepository;
     RoleRepository roleRepository;
+
+    EventService eventService;
 
     private AuthenticationManager authenticationManager;
 
@@ -31,38 +38,43 @@ public class UserService {
 
     @Autowired
     public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager,
-                       JWTTokenService jwtTokenService, UserDetailsServiceImpl userDetailsService) {
+                       JWTTokenService jwtTokenService, UserDetailsServiceImpl userDetailsService, EventService eventService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
         this.userDetailsService = userDetailsService;
+        this.eventService = eventService;
     }
 
     @Transactional
-    public User addNewUser(UserRequestDTO userRequestDTO){
+    public User addNewUser(UserRequestDTO userRequestDTO) {
 
         User user1 = new User(userRequestDTO.getName());
         RoleType roleType1 = userRequestDTO.getRoleType();
-        Role role = roleRepository.findByRoleType(roleType1).orElseThrow(() -> new ResourceNotFoundException("role not found"));
-        role.getUsers().add(user1);
-        user1.getRoles().add(role);
+        Role role1 = roleRepository.findByRoleType(roleType1).orElseThrow(() -> new ResourceNotFoundException("role not found"));
+        role1.getUsers().add(user1);
+        user1.getRoles().add(role1);
         return userRepository.save(user1);
     }
 
     @Transactional
-    public Role addRoleToUser (RoleType roleType, Long userId){
+    public Role addRoleToUser(RoleType roleType, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
-        Role role = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
-        role.getUsers().add(user);
-        user.getRoles().add(role);
-        return roleRepository.save(role);
+        Role role1 = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
+        role1.getUsers().add(user);
+        user.getRoles().add(role1);
+        return roleRepository.save(role1);
     }
 
-    public String authenticate (AuthRequestDTO authRequestDTO){
+
+
+    public String authenticate(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
         UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
         return jwtTokenService.generateToken(userDetails);
     }
+
+
 }

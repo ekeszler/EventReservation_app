@@ -1,42 +1,54 @@
 package com.proiect_final.proiect_final.dtos;
 
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class EventRequestDTO {
 
-    private Set<Long> customerPackageIds;
-
-    private Set<Long> eventReservationIds;
-
+    private Long userId;
     private String name;
 
-    public EventRequestDTO(Set<Long> customerPackageIds, Set<Long> eventReservationIds, String name) {
-        this.customerPackageIds = customerPackageIds;
-        this.eventReservationIds = eventReservationIds;
+    private LocalDateTime start;
+
+    private LocalDateTime end;
+
+    public EventRequestDTO(Long userIds, String name, LocalDateTime start, LocalDateTime end) {
         this.name = name;
+        this.start = start;
+        this.end = end;
+        this.userId = userId;
     }
 
-    public Set<Long> getCustomerPackageIds() {
-        return customerPackageIds;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCustomerPackageIds(Set<Long> customerPackageIds) {
-        this.customerPackageIds = customerPackageIds;
-    }
-
-    public Set<Long> getEventReservationIds() {
-        return eventReservationIds;
-    }
-
-    public void setEventReservationIds(Set<Long> eventReservationIds) {
-        this.eventReservationIds = eventReservationIds;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDateTime getStart() {
+        return start;
+    }
+
+    public void setStart(LocalDateTime start) {
+        this.start = start;
+    }
+
+    public LocalDateTime getEnd() {
+        return end;
+    }
+
+    public void setEnd(LocalDateTime end) {
+        this.end = end;
     }
 }

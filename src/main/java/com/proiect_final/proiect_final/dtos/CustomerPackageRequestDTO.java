@@ -4,28 +4,37 @@ import java.util.Set;
 
 public class CustomerPackageRequestDTO {
 
-    private Set<Long> eventIds;
+    private Long eventId;
+    private String packageName;
+    private Double price;
 
-    private Set<Long> productIds;
-
-    public CustomerPackageRequestDTO(Set<Long> eventIds, Set<Long> productIds) {
-        this.eventIds = eventIds;
-        this.productIds = productIds;
+    public CustomerPackageRequestDTO(Long eventId, String packageName, Double price) {
+        this.eventId = eventId;
+        this.packageName = packageName;
+        this.price = price;
     }
 
-    public Set<Long> getEventIds() {
-        return eventIds;
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void setEventIds(Set<Long> eventIds) {
-        this.eventIds = eventIds;
+    public void setEventId(Long eventId) {
+        this.eventId = eventId;
     }
 
-    public Set<Long> getProductIds() {
-        return productIds;
+    public String getPackageName() {
+        return packageName;
     }
 
-    public void setProductIds(Set<Long> productIds) {
-        this.productIds = productIds;
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

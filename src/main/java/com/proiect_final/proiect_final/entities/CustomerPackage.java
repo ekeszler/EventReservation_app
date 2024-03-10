@@ -13,6 +13,12 @@ public class CustomerPackage {
     @GeneratedValue
     private Long id;
 
+    @Column
+    private String packageName;
+
+    @Column
+    private Double price;
+
     @ManyToOne
     @JsonBackReference("event-customerPackages")
     @JoinColumn(name = "event_id")
@@ -25,12 +31,34 @@ public class CustomerPackage {
     public CustomerPackage() {
     }
 
+    public CustomerPackage(String packageName, Double price) {
+        this.packageName = packageName;
+        this.price = price;
+
+    }
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String name) {
+        this.packageName = name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public Event getEvent() {
