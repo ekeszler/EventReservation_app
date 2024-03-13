@@ -1,6 +1,7 @@
 package com.proiect_final.proiect_final.controllers;
 
 import com.proiect_final.proiect_final.dtos.UserRequestDTO;
+import com.proiect_final.proiect_final.entities.Event;
 import com.proiect_final.proiect_final.entities.RoleType;
 import com.proiect_final.proiect_final.entities.User;
 import com.proiect_final.proiect_final.services.UserService;
@@ -26,5 +27,10 @@ public class UserController {
     @PostMapping("/{roleType},/user/{userId}")
     public ResponseEntity<?> addRoleToUser(@PathVariable RoleType roleType, @PathVariable Long userId){
         return ResponseEntity.ok(userService.addRoleToUser(roleType,userId));
+    }
+
+    @PostMapping("/{event},/user/{userId}")
+    public ResponseEntity<?> addEventToUser(@PathVariable Event event, @PathVariable Long userId){
+        return ResponseEntity.ok(userService.addEventToUser(event,userId));
     }
 }

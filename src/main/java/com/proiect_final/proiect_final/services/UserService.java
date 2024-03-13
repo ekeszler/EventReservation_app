@@ -27,7 +27,6 @@ public class UserService {
     UserRepository userRepository;
     EventRepository eventRepository;
     RoleRepository roleRepository;
-
     EventService eventService;
 
     private AuthenticationManager authenticationManager;
@@ -66,6 +65,13 @@ public class UserService {
         role1.getUsers().add(user);
         user.getRoles().add(role1);
         return roleRepository.save(role1);
+    }
+
+    @Transactional
+    public Event addEventToUser(Event event, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        user.getEvent().add(event);
+        return eventRepository.save(event);
     }
 
 

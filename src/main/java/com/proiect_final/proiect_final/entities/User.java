@@ -28,7 +28,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("user-events")
-    private List<Event> eventReservations;
+    private List<Event> event;
 
     public User() {
     }
@@ -36,7 +36,7 @@ public class User {
     public User(String name) {
         this.name = name;
         this.roles = roles;
-        this.eventReservations = eventReservations;
+        this.event = event;
     }
 
     public Long getId() {
@@ -79,11 +79,11 @@ public class User {
         this.roles = roles;
     }
 
-    public List<Event> getEventReservations() {
-        return eventReservations;
+    public List<Event> getEvent() {
+        return event;
     }
 
-    public void setEventReservations(List<Event> eventReservations) {
-        this.eventReservations = eventReservations;
+    public void setEvent(List<Event> eventReservations) {
+        this.event = eventReservations;
     }
 }
