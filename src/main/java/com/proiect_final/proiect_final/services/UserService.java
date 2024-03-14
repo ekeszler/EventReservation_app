@@ -29,20 +29,17 @@ public class UserService {
     RoleRepository roleRepository;
     EventService eventService;
 
-    private AuthenticationManager authenticationManager;
+    //private AuthenticationManager authenticationManager;
 
-    private JWTTokenService jwtTokenService;
+    //private JWTTokenService jwtTokenService;
 
     private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager,
-                       JWTTokenService jwtTokenService, UserDetailsServiceImpl userDetailsService, EventService eventService) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository,  UserDetailsServiceImpl userDetailsService, EventService eventService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenService = jwtTokenService;
         this.userDetailsService = userDetailsService;
         this.eventService = eventService;
     }
@@ -76,11 +73,11 @@ public class UserService {
 
 
 
-    public String authenticate(AuthRequestDTO authRequestDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
-        return jwtTokenService.generateToken(userDetails);
-    }
+//    public String authenticate(AuthRequestDTO authRequestDTO) {
+//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
+//        return jwtTokenService.generateToken(userDetails);
+//    }
 
 
 }
