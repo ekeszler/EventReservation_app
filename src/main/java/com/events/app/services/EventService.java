@@ -11,6 +11,7 @@ import com.events.app.repositories.EventRepository;
 import com.events.app.repositories.PackageRepository;
 import com.events.app.repositories.ProductRepository;
 import com.events.app.repositories.UserRepository;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,21 +28,24 @@ public class EventService {
 
     PackageRepository packageRepository;
 
-    //TODO de injectat in constructor
-    @Autowired
+    EmailService emailService;
+
     EventMapper eventMapper;
 
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserRepository userRepository, ProductRepository productRepository, PackageRepository packageRepository) {
+    public EventService(EventRepository eventRepository, UserRepository userRepository, ProductRepository productRepository, PackageRepository packageRepository,
+                        EventMapper eventMapper, EmailService emailService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.packageRepository = packageRepository;
+        this.eventMapper = eventMapper;
+        this.emailService = emailService;
     }
 
     @Transactional
-    public Event createEvent(EventRequestDTO eventRequestDTO) {
+    public Event createEvent(EventRequestDTO eventRequestDTO) throws MessagingException {
         User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         List<Event> scheduledEvent = eventRepository.findAllByName(eventRequestDTO.getName());
 
@@ -56,10 +60,17 @@ public class EventService {
 //            //throw exception
 //        }
 
+        emailService.sendMessage(user.getEmail(), "Reservation for " + eventRequestDTO.getStart(), "Your reservation was successfully done");
+
         Event event = eventMapper.mapFromDTO(eventRequestDTO);
         event.setUser(user);
         return eventRepository.save(event);
+
+
+
     }
+
+
 
     public boolean existsEventBetween(Event event, LocalDateTime start, LocalDateTime end) {
 

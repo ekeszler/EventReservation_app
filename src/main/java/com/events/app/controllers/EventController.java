@@ -4,6 +4,7 @@ import com.events.app.dtos.CustomerPackageRequestDTO;
 import com.events.app.dtos.EventRequestDTO;
 import com.events.app.entities.Event;
 import com.events.app.services.EventService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,14 @@ public class EventController {
     }
 
     @PostMapping("/addEvent")
-    public ResponseEntity<Event> addEvent(@RequestBody EventRequestDTO eventRequestDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.createEvent(eventRequestDTO));
+    public ResponseEntity<Event> addEvent(@RequestBody EventRequestDTO eventRequestDTO) {
+        try {
+            Event event = eventService.createEvent(eventRequestDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(event);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @PostMapping("/addPackage")
