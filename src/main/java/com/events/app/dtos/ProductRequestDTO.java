@@ -6,12 +6,15 @@ public class ProductRequestDTO {
 
     private Double price;
 
+    private Long packageId;
 
 
 
-    public ProductRequestDTO(String productName, Double price) {
+
+    public ProductRequestDTO(String productName, Double price, Long packageId) {
         this.productName = productName;
         this.price = price;
+        this.packageId = packageId;
     }
 
 
@@ -30,5 +33,13 @@ public class ProductRequestDTO {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public Long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(Long packageId) {
+        this.packageId = packageId;
     }
 }

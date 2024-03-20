@@ -1,6 +1,6 @@
 package com.events.app.controllers;
 
-import com.events.app.dtos.CustomerPackageRequestDTO;
+import com.events.app.dtos.PackageRequestDTO;
 import com.events.app.dtos.EventRequestDTO;
 import com.events.app.entities.Event;
 import com.events.app.services.EventService;
@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/event")
@@ -33,12 +35,32 @@ public class EventController {
     }
 
     @PostMapping("/addPackage")
-    public ResponseEntity<?> addCustomerPackageToEvent(@RequestBody CustomerPackageRequestDTO customerPackageRequestDTO){
-        return ResponseEntity.ok(eventService.addPackageToEvent(customerPackageRequestDTO));
+    public ResponseEntity<?> addCustomerPackageToEvent(@RequestBody PackageRequestDTO packageRequestDTO){
+        return ResponseEntity.ok(eventService.addPackageToEvent(packageRequestDTO));
     }
 
     @PostMapping("/addLink")
     public ResponseEntity<?> addLinkToEvent(@RequestBody EventRequestDTO eventRequestDTO, String link) throws MessagingException {
         return ResponseEntity.ok(eventService.addLinkToEvent(eventRequestDTO,link));
+    }
+
+    @PutMapping("/{eventId}/update-start")
+    public ResponseEntity<String> updateEventStart(@PathVariable Long eventId, @RequestParam LocalDateTime newStart){
+        try{
+            eventService.updateEventDate(eventId, newStart);
+            return ResponseEntity.ok("The start of event with id " + eventId + " was updated to " + newStart );
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. The start was not updated");
+        }
+    }
+
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId){
+        try{
+            eventService.deleteEvent(eventId);
+            return ResponseEntity.ok("The event with id " + eventId + " was deleted");
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong, event was not deleted");
+        }
     }
 }

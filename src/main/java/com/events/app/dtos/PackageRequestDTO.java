@@ -1,14 +1,12 @@
 package com.events.app.dtos;
 
-import java.util.Set;
-
-public class CustomerPackageRequestDTO {
+public class PackageRequestDTO {
 
     private Long eventId;
     private String packageName;
     private Double price;
 
-    public CustomerPackageRequestDTO(Long eventId, String packageName, Double price) {
+    public PackageRequestDTO(Long eventId, String packageName, Double price) {
         this.eventId = eventId;
         this.packageName = packageName;
         this.price = price;

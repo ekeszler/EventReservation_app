@@ -2,6 +2,7 @@ package com.events.app.services;
 
 import com.events.app.entities.Product;
 import com.events.app.dtos.ProductRequestDTO;
+import com.events.app.exceptions.ResourceNotFoundException;
 import com.events.app.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,5 +21,19 @@ public class ProductService {
     public Product createProduct(ProductRequestDTO productRequestDTO){
         Product product = new Product(productRequestDTO.getProductName(), productRequestDTO.getPrice());
         return productRepository.save(product);
+    }
+
+    @Transactional
+    public Product updateProductPrice(Long productId, double newPrice){
+        Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("Product was not found"));
+        product.setPrice(newPrice);
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public void deleteProduct(Long productId){
+        Product product = productRepository.findById(productId).orElseThrow(()->new ResourceNotFoundException("product was not found"));
+        productRepository.delete(product);
+
     }
 }

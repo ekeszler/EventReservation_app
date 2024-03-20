@@ -6,10 +6,7 @@ import com.events.app.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product")
@@ -25,5 +22,25 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> addProduct(@RequestBody ProductRequestDTO productRequestDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productRequestDTO));
+    }
+
+    @PutMapping("/{productId}/update-price")
+    public ResponseEntity<String> updateProductPrice(@PathVariable Long productId, @RequestParam double newPrice){
+        try{
+            productService.updateProductPrice(productId, newPrice);
+            return ResponseEntity.ok("The price of product with id " + productId + " was updated to " + newPrice + "RON");
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong. The price was not updated");
+        }
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId){
+        try {
+            productService.deleteProduct(productId);
+            return ResponseEntity.ok("The product with id " + productId + " was deleted");
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong and the product was not deleted");
+        }
     }
 }
