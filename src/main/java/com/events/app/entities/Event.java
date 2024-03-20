@@ -38,6 +38,9 @@ public class Event {
     @Column
     private String galeryLink;
 
+    @Column
+    private String review;
+
     public Event() {
     }
 
@@ -65,8 +68,8 @@ public class Event {
         return packages;
     }
 
-    public void setCustomerPackages(List<Package> aPackages) {
-        this.packages = aPackages;
+    public void setCustomerPackages(List<Package> Packages) {
+        this.packages = Packages;
     }
 
     public String getGaleryLink() {
@@ -99,5 +102,13 @@ public class Event {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
     }
 }

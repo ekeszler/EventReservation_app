@@ -36,4 +36,9 @@ public class EventController {
     public ResponseEntity<?> addCustomerPackageToEvent(@RequestBody CustomerPackageRequestDTO customerPackageRequestDTO){
         return ResponseEntity.ok(eventService.addPackageToEvent(customerPackageRequestDTO));
     }
+
+    @PostMapping("/addLink")
+    public ResponseEntity<?> addLinkToEvent(@RequestBody EventRequestDTO eventRequestDTO, String link) throws MessagingException {
+        return ResponseEntity.ok(eventService.addLinkToEvent(eventRequestDTO,link));
+    }
 }

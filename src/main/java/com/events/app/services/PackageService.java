@@ -29,10 +29,10 @@ public class PackageService {
     }
 
     public Package addProductToPackage(ProductPackageRequestDTO productRequestDTO) {
-        Package aPackage = packageRepository.findById(productRequestDTO.getPackageId()).orElseThrow(() -> new ResourceNotFoundException("package not found"));
+        Package Package = packageRepository.findById(productRequestDTO.getPackageId()).orElseThrow(() -> new ResourceNotFoundException("package not found"));
         Product product = productRepository.findByProductName(productRequestDTO.getProductName()).orElseThrow(() -> new ResourceNotFoundException("product not found"));
-        aPackage.getProducts().add(product);
-        product.getCustomerPackages().add(aPackage);
-        return packageRepository.save(aPackage);
+        Package.getProducts().add(product);
+        product.getCustomerPackages().add(Package);
+        return packageRepository.save(Package);
     }
 }

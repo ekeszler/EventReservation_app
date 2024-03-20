@@ -79,11 +79,21 @@ public class EventService {
                 || event.getStart().isEqual(start) || event.getEnd().isEqual(end);
     }
 
+    @Transactional
     public Package addPackageToEvent(CustomerPackageRequestDTO customerPackageRequestDTO) {
         Event event = eventRepository.findById(customerPackageRequestDTO.getEventId()).orElseThrow(() -> new ResourceNotFoundException("event not found"));
         Package customerPackages = packageRepository.findByPackageName(customerPackageRequestDTO.getPackageName()).orElseThrow(() ->  new ResourceNotFoundException("Customer package not found"));;
         customerPackages.setEvent(event);
         return packageRepository.save(customerPackages);
+    }
+
+    @Transactional
+    public Event addLinkToEvent(EventRequestDTO eventRequestDTO, String link) throws MessagingException {
+        Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(()->new ResourceNotFoundException("event not found"));
+        User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(()->new ResourceNotFoundException("user not found"));
+        event.setGaleryLink(link);
+        emailService.sendMessage(user.getEmail(), "Gallery link for " + event.getName(), "You can now download you content for " + event.getName() + " from the following link " + link);
+        return eventRepository.save(event);
     }
 }
 
