@@ -7,27 +7,20 @@ import java.util.Set;
 
 public class EventRequestDTO {
 
-    private Long userId;
+
     private String name;
 
     private LocalDateTime start;
 
     private LocalDateTime end;
 
-    public EventRequestDTO(Long userIds, String name, LocalDateTime start, LocalDateTime end) {
+    public EventRequestDTO( String name, LocalDateTime start, LocalDateTime end) {
         this.name = name;
         this.start = start;
         this.end = end;
-        this.userId = userId;
+
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getName() {
         return name;

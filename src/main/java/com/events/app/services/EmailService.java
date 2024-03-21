@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import java.io.File;
+
 import java.time.LocalDateTime;
 
 @Service
@@ -27,7 +27,7 @@ public class EmailService {
         // ...
     }
 
-    public void SendReminderEmail(String to, String eventName, LocalDateTime eventStart){
+    public void sendReminderEmail(String to, String eventName, LocalDateTime eventStart){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Reminder for your event | " + eventName);

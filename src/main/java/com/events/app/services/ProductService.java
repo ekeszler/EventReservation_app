@@ -19,6 +19,7 @@ public class ProductService {
     }
     @Transactional
     public Product createProduct(ProductRequestDTO productRequestDTO){
+        //TODO use product mapper
         Product product = new Product(productRequestDTO.getProductName(), productRequestDTO.getPrice());
         return productRepository.save(product);
     }

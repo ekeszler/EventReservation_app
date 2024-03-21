@@ -1,5 +1,6 @@
 package com.events.app.services;
 
+import com.events.app.dtos.AuthRequestDTO;
 import com.events.app.dtos.UserRequestDTO;
 import com.events.app.entities.Role;
 import com.events.app.entities.RoleType;
@@ -10,6 +11,9 @@ import com.events.app.repositories.RoleRepository;
 import com.events.app.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +24,11 @@ public class UserService {
     RoleRepository roleRepository;
     EventService eventService;
 
-    //private AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
-    //private JWTTokenService jwtTokenService;
+    private JWTTokenService jwtTokenService;
 
-    //private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository,   EventService eventService) {
@@ -55,20 +59,12 @@ public class UserService {
         return roleRepository.save(role1);
     }
 
-//    @Transactional
-//    public Event addEventToUser(Event event, Long userId) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
-//        user.getEvent().add(event);
-//        return eventRepository.save(event);
-//    }
 
-
-
-//    public String authenticate(AuthRequestDTO authRequestDTO) {
-//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
-//        return jwtTokenService.generateToken(userDetails);
-//    }
+    public String authenticate(AuthRequestDTO authRequestDTO) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
+        return jwtTokenService.generateToken(userDetails);
+    }
 
 
 

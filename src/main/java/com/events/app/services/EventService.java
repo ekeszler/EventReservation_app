@@ -15,6 +15,7 @@ import com.events.app.repositories.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,7 +48,8 @@ public class EventService {
 
     @Transactional
     public Event createEvent(EventRequestDTO eventRequestDTO) throws MessagingException {
-        User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        //TODO peste tot pe unde iei useru din dub dupa id, de inlocuit cu luat usernamu userului logat, si apoi cautat in db dupa username
+       // User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         List<Event> scheduledEvent = eventRepository.findAllByName(eventRequestDTO.getName());
 
         for (Event event : scheduledEvent) {
@@ -91,10 +93,12 @@ public class EventService {
     @Transactional
     public Event addLinkToEvent(EventRequestDTO eventRequestDTO, String link) throws MessagingException {
         Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(()->new ResourceNotFoundException("event not found"));
-        User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(()->new ResourceNotFoundException("user not found"));
+        String loggedInUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findUserByUserName(loggedInUsername).orElseThrow(()->new ResourceNotFoundException("user not found"));
         event.setGaleryLink(link);
         emailService.sendMessage(user.getEmail(), "Gallery link for " + event.getName(), "You can now download you content for " + event.getName() + " from the following link " + link);
         return eventRepository.save(event);
+
     }
 
     @Transactional
