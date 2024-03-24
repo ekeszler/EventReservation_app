@@ -3,6 +3,7 @@ package com.events.app.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,7 +26,7 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name="package_id")
     )
     @JsonBackReference("packages-products")
-    private Set<Package> packages;
+    private List<Package> packages;
 
     public Product(String productName, Double price) {
         this.productName = productName;
@@ -52,11 +53,11 @@ public class Product {
         this.productName = name;
     }
 
-    public Set<Package> getCustomerPackages() {
+    public List<Package> getCustomerPackages() {
         return packages;
     }
 
-    public void setCustomerPackages(Set<Package> aPackages) {
+    public void setCustomerPackages(List<Package> aPackages) {
         this.packages = aPackages;
     }
 

@@ -1,4 +1,4 @@
-package com.proiect_final.proiect_final.config;
+package com.events.app.config;
 
 
 import com.events.app.services.JwtRequestFilter;

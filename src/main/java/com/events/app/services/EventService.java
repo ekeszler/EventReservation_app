@@ -8,6 +8,7 @@ import com.events.app.entities.Package;
 import com.events.app.entities.User;
 import com.events.app.exceptions.ResourceNotFoundException;
 import com.events.app.mapper.EventMapper;
+import com.events.app.mapper.UserMapper;
 import com.events.app.repositories.EventRepository;
 import com.events.app.repositories.PackageRepository;
 import com.events.app.repositories.ProductRepository;
@@ -27,29 +28,31 @@ public class EventService {
     EventRepository eventRepository;
     UserRepository userRepository;
     ProductRepository productRepository;
-
     PackageRepository packageRepository;
-
     EmailService emailService;
-
     EventMapper eventMapper;
+    UserMapper userMapper;
+    UserService userService;
 
 
     @Autowired
     public EventService(EventRepository eventRepository, UserRepository userRepository, ProductRepository productRepository, PackageRepository packageRepository,
-                        EventMapper eventMapper, EmailService emailService) {
+                        EventMapper eventMapper, EmailService emailService, UserMapper userMapper, UserService userService) {
         this.eventRepository = eventRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.packageRepository = packageRepository;
         this.eventMapper = eventMapper;
         this.emailService = emailService;
+        this.userMapper = userMapper;
+        this.userService = userService;
     }
 
     @Transactional
     public Event createEvent(EventRequestDTO eventRequestDTO) throws MessagingException {
         //TODO peste tot pe unde iei useru din dub dupa id, de inlocuit cu luat usernamu userului logat, si apoi cautat in db dupa username
        // User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userService.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         List<Event> scheduledEvent = eventRepository.findAllByName(eventRequestDTO.getName());
 
         for (Event event : scheduledEvent) {
@@ -93,8 +96,7 @@ public class EventService {
     @Transactional
     public Event addLinkToEvent(EventRequestDTO eventRequestDTO, String link) throws MessagingException {
         Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(()->new ResourceNotFoundException("event not found"));
-        String loggedInUsername = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepository.findUserByUserName(loggedInUsername).orElseThrow(()->new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userService.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         event.setGaleryLink(link);
         emailService.sendMessage(user.getEmail(), "Gallery link for " + event.getName(), "You can now download you content for " + event.getName() + " from the following link " + link);
         return eventRepository.save(event);

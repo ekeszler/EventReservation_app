@@ -3,6 +3,7 @@ package com.events.app.services;
 import com.events.app.entities.Product;
 import com.events.app.dtos.ProductRequestDTO;
 import com.events.app.exceptions.ResourceNotFoundException;
+import com.events.app.mapper.ProductMapper;
 import com.events.app.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,15 +13,17 @@ import org.springframework.stereotype.Service;
 public class ProductService {
 
     ProductRepository productRepository;
+    ProductMapper productMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
     }
     @Transactional
     public Product createProduct(ProductRequestDTO productRequestDTO){
         //TODO use product mapper
-        Product product = new Product(productRequestDTO.getProductName(), productRequestDTO.getPrice());
+        Product product = productMapper.mapFromDTO(productRequestDTO);
         return productRepository.save(product);
     }
 

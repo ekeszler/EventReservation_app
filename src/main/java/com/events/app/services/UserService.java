@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +30,15 @@ public class UserService {
 
     private JWTTokenService jwtTokenService;
 
-    private UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository,   EventService eventService) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, EventService eventService) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
-
         this.eventService = eventService;
+
     }
 
     @Transactional
@@ -51,8 +53,8 @@ public class UserService {
     }
 
     @Transactional
-    public Role addRoleToUser(RoleType roleType, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+    public Role addRoleToUser(RoleType roleType) {
+        User user = userRepository.findUserByUserName(getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         Role role1 = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
         role1.getUsers().add(user);
         user.getRoles().add(role1);
@@ -62,12 +64,19 @@ public class UserService {
 
     public String authenticate(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
+        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(authRequestDTO.getUsername());
         return jwtTokenService.generateToken(userDetails);
     }
 
-
-
+    public String getLoggedInUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName();
+        } else {
+            // Utilizatorul nu este autentificat
+            return null;
+        }
+    }
 
 
 }

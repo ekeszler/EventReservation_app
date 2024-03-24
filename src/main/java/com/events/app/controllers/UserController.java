@@ -23,9 +23,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.addNewUser(userRequestDTO));
     }
 
-    @PostMapping("/{roleType},/user/{userId}")
-    public ResponseEntity<?> addRoleToUser(@PathVariable RoleType roleType, @PathVariable Long userId){
-        return ResponseEntity.ok(userService.addRoleToUser(roleType,userId));
+    @PostMapping("/{roleType},/user/{userName}")
+    public ResponseEntity<?> addRoleToUser(@PathVariable RoleType roleType, @PathVariable String userName){
+        return ResponseEntity.ok(userService.addRoleToUser(roleType));
     }
 
 //    @PostMapping("/{event},/user/{userId}")
