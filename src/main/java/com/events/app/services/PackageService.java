@@ -5,6 +5,7 @@ import com.events.app.dtos.ProductRequestDTO;
 import com.events.app.entities.Package;
 import com.events.app.entities.Product;
 import com.events.app.exceptions.ResourceNotFoundException;
+import com.events.app.mapper.ProductMapper;
 import com.events.app.repositories.PackageRepository;
 import com.events.app.repositories.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -16,11 +17,13 @@ public class PackageService {
 
     ProductRepository productRepository;
     PackageRepository packageRepository;
+    ProductMapper productMapper;
 
     @Autowired
-    public PackageService(ProductRepository productRepository, PackageRepository packageRepository) {
+    public PackageService(ProductRepository productRepository, PackageRepository packageRepository, ProductMapper productMapper) {
         this.productRepository = productRepository;
         this.packageRepository = packageRepository;
+        this.productMapper = productMapper;
     }
 
     public Package createPackage(PackageRequestDTO packageRequestDTO){
@@ -30,7 +33,7 @@ public class PackageService {
 
     public Package addProductToPackage(ProductRequestDTO productRequestDTO) {
         Package Package = packageRepository.findById(productRequestDTO.getPackageId()).orElseThrow(() -> new ResourceNotFoundException("package not found"));
-        Product product = productRepository.findByProductName(productRequestDTO.getProductName()).orElseThrow(() -> new ResourceNotFoundException("product not found"));
+        Product product = productMapper.mapFromDTO(productRequestDTO);
         Package.getProducts().add(product);
         product.getCustomerPackages().add(Package);
         return packageRepository.save(Package);
