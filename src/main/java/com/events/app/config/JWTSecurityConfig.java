@@ -25,6 +25,7 @@ public class JWTSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 

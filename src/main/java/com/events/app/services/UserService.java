@@ -6,6 +6,7 @@ import com.events.app.entities.Role;
 import com.events.app.entities.RoleType;
 import com.events.app.entities.User;
 import com.events.app.exceptions.ResourceNotFoundException;
+import com.events.app.mapper.UserMapper;
 import com.events.app.repositories.EventRepository;
 import com.events.app.repositories.RoleRepository;
 import com.events.app.repositories.UserRepository;
@@ -16,7 +17,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -24,7 +28,8 @@ public class UserService {
     UserRepository userRepository;
     EventRepository eventRepository;
     RoleRepository roleRepository;
-    EventService eventService;
+    private PasswordEncoder passwordEncoder;
+    UserMapper userMapper;
 
     private AuthenticationManager authenticationManager;
 
@@ -33,11 +38,12 @@ public class UserService {
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, EventService eventService) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
-        this.eventService = eventService;
+        this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
 
     }
 
@@ -54,7 +60,7 @@ public class UserService {
 
     @Transactional
     public Role addRoleToUser(RoleType roleType) {
-        User user = userRepository.findUserByUserName(getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         Role role1 = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
         role1.getUsers().add(user);
         user.getRoles().add(role1);
@@ -68,14 +74,19 @@ public class UserService {
         return jwtTokenService.generateToken(userDetails);
     }
 
-    public String getLoggedInUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return authentication.getName();
-        } else {
-            // Utilizatorul nu este autentificat
-            return null;
+    @Transactional
+    public User register (AuthRequestDTO authRequestDTO){
+        Optional<User> userOptional = userRepository.findUserByUserName(authRequestDTO.getUsername());
+        if (userOptional.isPresent()){
+            throw new ResourceNotFoundException("aleardy exist");
         }
+        User user = new User();
+        user.setUserName(authRequestDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(authRequestDTO.getPassword()));
+        Role role = roleRepository.findByRoleType(RoleType.ROLE_USER).orElseThrow(()->new ResourceNotFoundException("role not found"));
+        user.getRoles().add(role);
+        role.getUsers().add(user);
+        return userRepository.save(user);
     }
 
 

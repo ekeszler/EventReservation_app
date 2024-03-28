@@ -32,7 +32,7 @@ public class EventService {
     EmailService emailService;
     EventMapper eventMapper;
     UserMapper userMapper;
-    UserService userService;
+    //UserService userService;
 
 
     @Autowired
@@ -45,14 +45,14 @@ public class EventService {
         this.eventMapper = eventMapper;
         this.emailService = emailService;
         this.userMapper = userMapper;
-        this.userService = userService;
+        //this.userService = userService;
     }
 
     @Transactional
     public Event createEvent(EventRequestDTO eventRequestDTO) throws MessagingException {
         //TODO peste tot pe unde iei useru din dub dupa id, de inlocuit cu luat usernamu userului logat, si apoi cautat in db dupa username
        // User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
-        User user = userRepository.findUserByUserName(userService.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         List<Event> scheduledEvent = eventRepository.findAllByName(eventRequestDTO.getName());
 
         for (Event event : scheduledEvent) {
@@ -96,7 +96,7 @@ public class EventService {
     @Transactional
     public Event addLinkToEvent(EventRequestDTO eventRequestDTO, String link) throws MessagingException {
         Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(()->new ResourceNotFoundException("event not found"));
-        User user = userRepository.findUserByUserName(userService.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         event.setGaleryLink(link);
         emailService.sendMessage(user.getEmail(), "Gallery link for " + event.getName(), "You can now download you content for " + event.getName() + " from the following link " + link);
         return eventRepository.save(event);

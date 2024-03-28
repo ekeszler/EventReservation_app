@@ -34,12 +34,14 @@ public class SwaggerConfig {
 
     @Bean
     public OpenAPI openAPI(){
-        return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new Components().addSecuritySchemes("Bearer Authentication", createAPIKeyScheme()))
-                .info(new Info().title("My REST API")
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().
+                        addList("Bearer Authentication"))
+                .components(new Components().addSecuritySchemes
+                        ("Bearer Authentication", createAPIKeyScheme()))
+                .info(new Info().title("Event Reservation App REST APIs")
                         .description("Some custom description of API")
-                        .version("1.0").contact(new Contact().name("Sallo Szrajbman")
-                                .email("www.baeldung.com").url("salloszraj@gmail.com"))
+                        .version("1.0").contact(new Contact().name("Erik Keszler")
+                                .email("www.baeldung.com").url("ekeszler77@gmail.com"))
                         .license(new License().name("License of API")
                                 .url("API license url")));
     }

@@ -3,6 +3,7 @@ package com.events.app.services;
 
 import com.events.app.entities.User;
 import com.events.app.exceptions.ResourceNotFoundException;
+import com.events.app.mapper.UserMapper;
 import com.events.app.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private UserRepository userRepository;
 
-    private UserService userService;
+    //private UserService userService;
+
+    private UserMapper userMapper;
 
 
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, UserService userService) {
+    public UserDetailsServiceImpl(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.userService = userService;
+        this.userMapper = userMapper;
 
     }
 
@@ -36,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByUserName(userService.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         return new org.springframework.security.core.userdetails.User (user.getUserName(), user.getPassword(), buildSimpleGrantedAuthorities(user));
     }
 
