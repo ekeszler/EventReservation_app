@@ -1,10 +1,11 @@
 package com.events.app.services;
 
 import com.events.app.dtos.AuthRequestDTO;
+import com.events.app.dtos.EventRequestDTO;
+import com.events.app.dtos.PackageRequestDTO;
 import com.events.app.dtos.UserRequestDTO;
-import com.events.app.entities.Role;
-import com.events.app.entities.RoleType;
-import com.events.app.entities.User;
+import com.events.app.entities.*;
+import com.events.app.entities.Package;
 import com.events.app.exceptions.ResourceNotFoundException;
 import com.events.app.mapper.UserMapper;
 import com.events.app.repositories.EventRepository;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,6 +72,25 @@ public class UserService {
         return roleRepository.save(role1);
     }
 
+    @Transactional
+    public Event addEventToUser(EventRequestDTO eventRequestDTO) {
+        User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(() -> new ResourceNotFoundException("event not found"));
+        event.setUser(user);
+        return eventRepository.save(event);
+    }
+
+    @Transactional
+    public List<User> findAllUsers(){
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found"));
+        userRepository.delete(user);
+    }
+
 
     public String authenticate(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
@@ -81,7 +102,7 @@ public class UserService {
     public User register (AuthRequestDTO authRequestDTO){
         Optional<User> userOptional = userRepository.findUserByUserName(authRequestDTO.getUsername());
         if (userOptional.isPresent()){
-            throw new ResourceNotFoundException("aleardy exist");
+            throw new ResourceNotFoundException("already exist");
         }
         User user = new User();
         user.setUserName(authRequestDTO.getUsername());

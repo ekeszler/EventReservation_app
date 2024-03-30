@@ -57,9 +57,10 @@ public class JWTSecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
-                                .requestMatchers("/authenticate").permitAll()
+                                .requestMatchers("/authenticate/**").permitAll()
+                                .requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/package/**").hasRole( "ADMIN")
-                                .requestMatchers("/event/addLink").hasRole( "ADMIN")
+                                .requestMatchers("/event/**").hasRole( "ADMIN")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

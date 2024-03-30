@@ -5,6 +5,7 @@ import com.events.app.dtos.EventRequestDTO;
 import com.events.app.dtos.ProductRequestDTO;
 import com.events.app.entities.Event;
 import com.events.app.entities.Package;
+import com.events.app.entities.Product;
 import com.events.app.entities.User;
 import com.events.app.exceptions.ResourceNotFoundException;
 import com.events.app.mapper.EventMapper;
@@ -50,8 +51,6 @@ public class EventService {
 
     @Transactional
     public Event createEvent(EventRequestDTO eventRequestDTO) throws MessagingException {
-        //TODO peste tot pe unde iei useru din dub dupa id, de inlocuit cu luat usernamu userului logat, si apoi cautat in db dupa username
-       // User user = userRepository.findById(eventRequestDTO.getUserId()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         List<Event> scheduledEvent = eventRepository.findAllByName(eventRequestDTO.getName());
 
@@ -60,11 +59,6 @@ public class EventService {
                 throw new ResourceNotFoundException("this date is already reserved");
             }
         }
-//        boolean existsEventBetween = scheduledEvent.stream()
-//                .anyMatch(event -> existsEventBetween(event, eventRequestDTO.getStart(), eventRequestDTO.getEnd()));
-//        if (existsEventBetween){
-//            //throw exception
-//        }
 
         emailService.sendMessage(user.getEmail(), "Reservation for " + eventRequestDTO.getStart(), "Your reservation was successfully done");
 
@@ -73,9 +67,7 @@ public class EventService {
         return eventRepository.save(event);
 
 
-
     }
-
 
 
     public boolean existsEventBetween(Event event, LocalDateTime start, LocalDateTime end) {
@@ -88,14 +80,14 @@ public class EventService {
     @Transactional
     public Package addPackageToEvent(PackageRequestDTO packageRequestDTO) {
         Event event = eventRepository.findById(packageRequestDTO.getEventId()).orElseThrow(() -> new ResourceNotFoundException("event not found"));
-        Package customerPackages = packageRepository.findByPackageName(packageRequestDTO.getPackageName()).orElseThrow(() ->  new ResourceNotFoundException("Customer package not found"));;
+        Package customerPackages = packageRepository.findByPackageName(packageRequestDTO.getPackageName()).orElseThrow(() -> new ResourceNotFoundException("Customer package not found"));
         customerPackages.setEvent(event);
         return packageRepository.save(customerPackages);
     }
 
     @Transactional
     public Event addLinkToEvent(EventRequestDTO eventRequestDTO, String link) throws MessagingException {
-        Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(()->new ResourceNotFoundException("event not found"));
+        Event event = eventRepository.findByName(eventRequestDTO.getName()).orElseThrow(() -> new ResourceNotFoundException("event not found"));
         User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
         event.setGaleryLink(link);
         emailService.sendMessage(user.getEmail(), "Gallery link for " + event.getName(), "You can now download you content for " + event.getName() + " from the following link " + link);
@@ -104,15 +96,20 @@ public class EventService {
     }
 
     @Transactional
-    public Event updateEventDate(Long eventId, LocalDateTime newStart){
-        Event event = eventRepository.findById(eventId).orElseThrow(()-> new ResourceNotFoundException("Event not found"));
+    public List<Event> findAllEvents(){
+        return eventRepository.findAll();
+    }
+
+    @Transactional
+    public Event updateEventDate(Long eventId, LocalDateTime newStart) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
         event.setStart(newStart);
         return eventRepository.save(event);
     }
 
     @Transactional
-    public void deleteEvent(Long eventId){
-        Event event = eventRepository.findById(eventId).orElseThrow(()->new ResourceNotFoundException("event not found"));
+    public void deleteEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new ResourceNotFoundException("event not found"));
         eventRepository.delete(event);
     }
 }

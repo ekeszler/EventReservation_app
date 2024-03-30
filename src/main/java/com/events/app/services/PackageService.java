@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PackageService {
 
@@ -37,6 +39,11 @@ public class PackageService {
         Package.getProducts().add(product);
         product.getCustomerPackages().add(Package);
         return packageRepository.save(Package);
+    }
+
+    @Transactional
+    public List<Package> showAllPackages(){
+        return packageRepository.findAll();
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.events.app.controllers;
 import com.events.app.dtos.PackageRequestDTO;
 import com.events.app.dtos.EventRequestDTO;
 import com.events.app.entities.Event;
+import com.events.app.entities.Product;
 import com.events.app.services.EventService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/event")
@@ -42,6 +44,12 @@ public class EventController {
     @PostMapping("/addLink")
     public ResponseEntity<?> addLinkToEvent(@RequestBody EventRequestDTO eventRequestDTO, String link) throws MessagingException {
         return ResponseEntity.ok(eventService.addLinkToEvent(eventRequestDTO,link));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Event>> findAllEvents(){
+        List<Event> events = eventService.findAllEvents();
+        return ResponseEntity.ok(events);
     }
 
     @PutMapping("/{eventId}/update-start")

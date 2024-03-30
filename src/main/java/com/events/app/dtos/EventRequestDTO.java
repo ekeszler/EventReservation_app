@@ -14,12 +14,15 @@ public class EventRequestDTO {
 
     private LocalDateTime end;
 
+    private Long userId;
+
     public EventRequestDTO(){}
 
-    public EventRequestDTO( String name, LocalDateTime start, LocalDateTime end) {
+    public EventRequestDTO( String name, LocalDateTime start, LocalDateTime end, Long userId) {
         this.name = name;
         this.start = start;
         this.end = end;
+        this.userId = userId;
 
     }
 
@@ -45,5 +48,13 @@ public class EventRequestDTO {
 
     public void setEnd(LocalDateTime end) {
         this.end = end;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

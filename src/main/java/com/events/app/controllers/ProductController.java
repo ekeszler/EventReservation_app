@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {
@@ -22,6 +24,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Product> addProduct(@RequestBody ProductRequestDTO productRequestDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productRequestDTO));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> showAllProducts(){
+        List<Product> products = productService.showAllProducts();
+        return ResponseEntity.ok(products);
     }
 
     @PutMapping("/{productId}/update-price")

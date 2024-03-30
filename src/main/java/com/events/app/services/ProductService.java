@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -27,11 +29,15 @@ public class ProductService {
     }
     @Transactional
     public Product createProduct(ProductRequestDTO productRequestDTO){
-        //TODO use product mapper
         Product product = productMapper.mapFromDTO(productRequestDTO);
         Package apackage = packageRepository.findById(productRequestDTO.getPackageId()).orElseThrow(()-> new ResourceNotFoundException("package not found"));
         product.getCustomerPackages().add(apackage);
         return productRepository.save(product);
+    }
+
+    @Transactional
+    public List<Product> showAllProducts(){
+        return productRepository.findAll();
     }
 
     @Transactional
