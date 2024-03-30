@@ -6,6 +6,8 @@ public class PackageRequestDTO {
     private String packageName;
     private Double price;
 
+    public PackageRequestDTO(){}
+
     public PackageRequestDTO(Long eventId, String packageName, Double price) {
         this.eventId = eventId;
         this.packageName = packageName;

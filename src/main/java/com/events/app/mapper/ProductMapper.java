@@ -12,13 +12,11 @@ import java.util.Set;
 @Component
 public class ProductMapper {
 
-    PackageRepository packageRepository;
 
     public Product mapFromDTO(ProductRequestDTO productRequestDTO) {
         Product product = new Product();
         product.setProductName(productRequestDTO.getProductName());
         product.setPrice(productRequestDTO.getPrice());
-        product.setCustomerPackages(packageRepository.findById(productRequestDTO.getPackageId()).stream().toList());
         return product;
     }
 }

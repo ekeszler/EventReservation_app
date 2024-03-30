@@ -38,12 +38,15 @@ public class UserService {
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JWTTokenService jwtTokenService, UserDetailsServiceImpl userDetailsServiceImpl) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenService = jwtTokenService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
 
     }
 

@@ -22,6 +22,7 @@ public class UserMapper {
         return user;
     }
 
+    //TODO de mutat in userService
     public String getLoggedInUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {

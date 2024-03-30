@@ -14,6 +14,8 @@ public class EventRequestDTO {
 
     private LocalDateTime end;
 
+    public EventRequestDTO(){}
+
     public EventRequestDTO( String name, LocalDateTime start, LocalDateTime end) {
         this.name = name;
         this.start = start;

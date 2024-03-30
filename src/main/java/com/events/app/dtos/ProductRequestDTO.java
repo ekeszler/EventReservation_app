@@ -9,7 +9,7 @@ public class ProductRequestDTO {
     private Long packageId;
 
 
-
+    public ProductRequestDTO(){}
 
     public ProductRequestDTO(String productName, Double price, Long packageId) {
         this.productName = productName;
