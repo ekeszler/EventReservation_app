@@ -25,7 +25,6 @@ As a user, I can:
 - view all packages
 - create a new event
 - add package to event
-- add product to package
 - view a specific event
 
 
