@@ -3,6 +3,7 @@ package com.events.app.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,9 @@ public class Product {
     }
 
     public List<Package> getCustomerPackages() {
+        if (packages == null){
+            packages = new ArrayList<>();
+        }
         return packages;
     }
 

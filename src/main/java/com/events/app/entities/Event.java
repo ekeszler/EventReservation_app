@@ -31,7 +31,7 @@ public class Event {
 
 
     @OneToMany(mappedBy = "event", cascade = {CascadeType.MERGE, CascadeType.MERGE})
-    @JsonManagedReference("packages")
+    @JsonManagedReference("event-packages")
     private List<Package> packages;
 
 

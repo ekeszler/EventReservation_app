@@ -25,7 +25,7 @@ public class Package {
     private Event event;
 
     @ManyToMany(mappedBy ="packages",cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JsonManagedReference("packages-product")
+    @JsonManagedReference("packages-products")
     private Set<Product> products;
 
     public Package() {
