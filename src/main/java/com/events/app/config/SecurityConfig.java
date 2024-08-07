@@ -47,8 +47,8 @@ public class SecurityConfig {
                                 .requestMatchers(AUTH_WHITELIST).permitAll()
                                 .requestMatchers("/authenticate/**").permitAll()
                                 .requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/package/**").hasRole( "ADMIN")
-                                .requestMatchers("/event/**").hasRole( "ADMIN")
+                                .requestMatchers("/package/**").hasRole( "ADMINISTRATOR")
+                                .requestMatchers("/event/**").hasRole( "ADMINISTRATOR")
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec

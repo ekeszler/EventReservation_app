@@ -1,6 +1,7 @@
 package com.events.app.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name="package_id")
     )
-    @JsonBackReference("packages-products")
+    @JsonManagedReference("packages-products")
     private List<Package> packages;
 
     public Product(String productName, Double price) {

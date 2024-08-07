@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
    #MySQL Database Service
-  events_db-database:
+  events-database:
    image: mysql:8.0
-   container_name: events_db-database
+   container_name: events-database
    environment:
      MYSQL_DATABASE: events_db
      MYSQL_ROOT_PASSWORD: Root12345!
@@ -20,27 +20,27 @@ services:
     build: .
     container_name: events-server
     depends_on:
-      - events_db-database
+      - events-database
     ports:
       - "8081:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-database:3306/events_db?useSSL=falseallowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_URL: jdbc:mysql://events-database:3306/events_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Root12345!
-      SPRING_MAIL_USERNAME: fbutuc5@gmail.com
-      SPRING_MAIL_PASSWORD: ehax uikk qkra javm
+      SPRING_MAIL_USERNAME: ekeszler77@gmail.com
+      SPRING_MAIL_PASSWORD: bfhp fmql mjlj uyko
     restart: unless-stopped
 
- keycloak-server:
-  image: quay.io/keycloak/keycloak:22.0.1
-  container_name: keycloak-server
-  ports:
-    - "7080:8080"
-  environment:
-    KEYCLOAK_ADMIN: "admin"
-    KEYCLOAK_ADMIN_PASSWORD: "admin"
-  command: "start-dev"
+  keycloak-server:
+    image: quay.io/keycloak/keycloak:22.0.1
+    container_name: keycloak-server
+    ports:
+      - "7080:8080"
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command: "start-dev"
 
 volumes:
   mysql-data:

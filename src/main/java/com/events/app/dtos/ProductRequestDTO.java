@@ -15,6 +15,7 @@ public class ProductRequestDTO {
         this.productName = productName;
         this.price = price;
         this.packageId = packageId;
+
     }
 
 

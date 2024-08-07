@@ -22,10 +22,10 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<String> authenticate(@RequestBody AuthRequestDTO authRequestDTO){
-        return ResponseEntity.ok(userService.authenticate(authRequestDTO));
-    }
+//    @PostMapping("/authenticate")
+//    public ResponseEntity<String> authenticate(@RequestBody AuthRequestDTO authRequestDTO){
+//        return ResponseEntity.ok(userService.authenticate(authRequestDTO));
+//    }
 
     @PostMapping("/register")
     public ResponseEntity<User> register (@RequestBody AuthRequestDTO authRequestDTO){

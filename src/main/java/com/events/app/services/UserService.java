@@ -12,6 +12,9 @@ import com.events.app.repositories.EventRepository;
 import com.events.app.repositories.RoleRepository;
 import com.events.app.repositories.UserRepository;
 import jakarta.transaction.Transactional;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,43 +37,59 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
     UserMapper userMapper;
 
+    private Keycloak keycloak;
+
     private AuthenticationManager authenticationManager;
 
-    private JWTTokenService jwtTokenService;
-
-    private UserDetailsServiceImpl userDetailsServiceImpl;
+//    private JWTTokenService jwtTokenService;
+//
+//    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
-    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JWTTokenService jwtTokenService, UserDetailsServiceImpl userDetailsServiceImpl) {
+    public UserService(UserRepository userRepository, EventRepository eventRepository, RoleRepository roleRepository, UserMapper userMapper, Keycloak keycloak) {
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.jwtTokenService = jwtTokenService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
-
+        this.keycloak = keycloak;
     }
+
 
     @Transactional
-    public User addNewUser(UserRequestDTO userRequestDTO) {
-
-        User user1 = new User(userRequestDTO.getName());
-        RoleType roleType1 = userRequestDTO.getRoleType();
-        Role role1 = roleRepository.findByRoleType(roleType1).orElseThrow(() -> new ResourceNotFoundException("role not found"));
-        role1.getUsers().add(user1);
-        user1.getRoles().add(role1);
-        return userRepository.save(user1);
+    public User addNewUser(UserRequestDTO authRequestDTO) {
+        UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setUsername(authRequestDTO.getUserName());
+        userRepresentation.setCredentials(Collections.singletonList(createPasswordCredentials(authRequestDTO.getPassword())));
+        userRepresentation.setEnabled(true);
+        keycloak.realm("master").users().create(userRepresentation);
+        String keycloakId = keycloak.realm("master").users().search(authRequestDTO.getUserName()).get(0).getId();
+        User user = new User();
+        user.setName(authRequestDTO.getUserName());
+        Optional<Role> roleOptional = roleRepository.findByRoleType(RoleType.ROLE_USER);
+        if (roleOptional.isPresent()) {
+            Role role = roleOptional.get();
+            user.getRoles().add(role);
+            role.getUsers().add(user);
+        }
+        return userRepository.save(user);
     }
+
+    private CredentialRepresentation createPasswordCredentials(String password) {
+        CredentialRepresentation passwordCredentials = new CredentialRepresentation();
+        passwordCredentials.setType(CredentialRepresentation.PASSWORD);
+        passwordCredentials.setValue(password);
+        passwordCredentials.setTemporary(false);
+        return passwordCredentials;
+    }
+
 
     @Transactional
     public Role addRoleToUser(RoleType roleType) {
         User user = userRepository.findUserByUserName(userMapper.getLoggedInUsername()).orElseThrow(() -> new ResourceNotFoundException("user not found"));
-        Role role1 = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
-        role1.getUsers().add(user);
-        user.getRoles().add(role1);
-        return roleRepository.save(role1);
+        Role role = roleRepository.findByRoleType(roleType).orElseThrow(() -> new ResourceNotFoundException("role not found"));
+        role.getUsers().add(user);
+        user.getRoles().add(role);
+        return roleRepository.save(role);
     }
 
     @Transactional
@@ -92,11 +112,11 @@ public class UserService {
     }
 
 
-    public String authenticate(AuthRequestDTO authRequestDTO) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(authRequestDTO.getUsername());
-        return jwtTokenService.generateToken(userDetails);
-    }
+//    public String authenticate(AuthRequestDTO authRequestDTO) {
+//        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+//        UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(authRequestDTO.getUsername());
+//        return jwtTokenService.generateToken(userDetails);
+//    }
 
     @Transactional
     public User register (AuthRequestDTO authRequestDTO){

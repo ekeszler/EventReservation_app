@@ -2,24 +2,24 @@ package com.events.app.dtos;
 
 public class PackageRequestDTO {
 
-    private Long eventId;
+    private Long event_id;
     private String packageName;
     private Double price;
 
     public PackageRequestDTO(){}
 
-    public PackageRequestDTO(Long eventId, String packageName, Double price) {
-        this.eventId = eventId;
+    public PackageRequestDTO(Long event_id, String packageName, Double price) {
+        this.event_id = event_id;
         this.packageName = packageName;
         this.price = price;
     }
 
     public Long getEventId() {
-        return eventId;
+        return event_id;
     }
 
-    public void setEventId(Long eventId) {
-        this.eventId = eventId;
+    public void setEventId(Long event_id) {
+        this.event_id = event_id;
     }
 
     public String getPackageName() {
